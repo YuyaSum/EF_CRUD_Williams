@@ -105,13 +105,31 @@ namespace EF_CRUD_Williams2.Controllers
         {
             if (ModelState.IsValid)
             {
-                //in here maybe mess with id so it don't break?
-                //maybe make a proc that does MAXID+1 to have it not break
-                //can use adventures in crud to aid in this
+                
+                int id = 1;
+                foreach (Customer c in _context.Customers) {
 
-                _context.Add(customer);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    id++;
+                }
+
+                customer.Id = id;
+
+                if (id < 100)
+                {
+                    _context.Add(customer);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                //_context.Add(customer);
+                //_context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Customer ON;");
+                //await _context.SaveChangesAsync();
+                //_context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Customer OFF;");
+                //return RedirectToAction(nameof(Index));
+
             }
             return View(customer);
         }
